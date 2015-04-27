@@ -19,13 +19,19 @@ data_Affy@annotation=paste("ga",data_Affy@annotation,sep="")
 
 RMA=rma(data_Affy)
 dataRMA=exprs(RMA)
+
 biocLite('gahgu95av2.db')
 require(gahgu95av2.db)
+
 class=data$CLASS
 class=as.data.frame(class)
 class=AnnotatedDataFrame(class)
 ExprSet=new("ExpressionSet", expr=dataRMA,phenoData=opis, annotation="gahgu95av2.db")
-names=as.data.frame(dataRMA)
+#names=as.data.frame(dataRMA)
+entrez<- gahgu95av2ENTREZID
+mapped_probes <- mappedkeys(entrez)
+gene_list <- as.list(entrez[mapped_probes])
+names=as.data.frame(gene_list)
 names=AnnotatedDataFrame(names)
 ExprSet@featureData=names
 ExprSet@protocolData=class
