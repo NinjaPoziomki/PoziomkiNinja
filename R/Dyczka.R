@@ -21,6 +21,11 @@ RMA=rma(data_Affy)
 dataRMA=exprs(RMA)
 biocLite('gahgu95av2.db')
 require(gahgu95av2.db)
-experiment=new("MIAME",name="DATA",lab="IO",title="DANE")
-ExprSet=new("ExpressionSet", expr=dataRMA,phenoData=opis, experimentData=experiment,annotation="gahgu95av2.db")
-
+class=data$CLASS
+class=as.data.frame(class)
+class=AnnotatedDataFrame(class)
+ExprSet=new("ExpressionSet", expr=dataRMA,phenoData=opis, annotation="gahgu95av2.db")
+names=as.data.frame(dataRMA)
+names=AnnotatedDataFrame(names)
+ExprSet@featureData=names
+ExprSet@protocolData=class
