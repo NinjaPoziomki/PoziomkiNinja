@@ -64,5 +64,5 @@ eall=cbind(AffyID,EntrezID,GeneDESCRIPTIONS)
 feature=AnnotatedDataFrame(feature)
 ExprSet@featureData=feature
 
-
+save(ExprSet,file='ExprSet.RData')
 
