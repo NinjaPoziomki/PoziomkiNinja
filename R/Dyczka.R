@@ -1,4 +1,4 @@
-
+#setwd("D:/PoziomkiNinja/R")
 source("http://bioconductor.org/biocLite.R")
 biocLite(c("Biobase"))
 require("Biobase")
@@ -28,10 +28,23 @@ class=as.data.frame(class)
 class=AnnotatedDataFrame(class)
 ExprSet=new("ExpressionSet", expr=dataRMA,phenoData=opis, annotation="gahgu95av2.db")
 #names=as.data.frame(dataRMA)
+
 entrez<- gahgu95av2ENTREZID
 mapped_probes <- mappedkeys(entrez)
-gene_list <- as.list(entrez[mapped_probes])
-names=as.data.frame(gene_list)
+entrez_ID <- as.list(entrez[mapped_probes])
+names=data.frame(row.names=mapped_probes) 
+
+entrez <- gahgu95av2GENENAME
+mapped_probes <- mappedkeys(entrez)
+# Convert to a list
+entrez_genename <- as.data.frame(as.list(entrez[mapped_probes]))
+names[,1]=entrez_genename
+
+
+
+
 names=AnnotatedDataFrame(names)
 ExprSet@featureData=names
 ExprSet@protocolData=class
+
+

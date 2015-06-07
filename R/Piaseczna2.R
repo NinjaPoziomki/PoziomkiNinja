@@ -30,15 +30,26 @@ ExprSet=new("ExpressionSet", expr=dataRMA,phenoData=opis, annotation="gahgu95av2
 
 #names=as.data.frame(dataRMA)
 entrez<- gahgu95av2ENTREZID
+<<<<<<< HEAD
 mapped_probes <- mappedkeys(entrez)
 gene_list <- as.list(entrez[mapped_probes])
+=======
+AffyID <- mappedkeys(entrez)
+gene_list <- as.list(entrez[AffyID])
+>>>>>>> a0763cb382cafcd4e34e1af3845f66999812cd67
 
 
 x <- gahgu95av2DESCRIPTIONS
 # Get the probe identifiers that are mapped to a gene description
+<<<<<<< HEAD
 mapped_probes <- mappedkeys(x)
 # Convert to a list
 xx <- as.list(x[mapped_probes])
+=======
+AffyID <- mappedkeys(x)
+# Convert to a list
+xx <- as.list(x[AffyID])
+>>>>>>> a0763cb382cafcd4e34e1af3845f66999812cd67
 
 names=as.data.frame(gene_list)
 names=AnnotatedDataFrame(names)
@@ -47,6 +58,7 @@ ExprSet@protocolData=class
 
 
 
+<<<<<<< HEAD
 g_l=c()
 for (i in 1:length(gene_list))
 {g_l[i]=gene_list[[i]]
@@ -63,4 +75,24 @@ eall=cbind(mapped_probes,g_l,g_d)
   feature=as.data.frame(eall,st)
 
 
+=======
+EntrezID=c()
+for (i in 1:length(gene_list))
+{EntrezID[i]=gene_list[[i]]
+}
+
+
+GeneDESCRIPTIONS=c()
+for (i in 1:length(xx))
+{GeneDESCRIPTIONS[i]=xx[[i]]
+}
+
+
+eall=cbind(AffyID,EntrezID,GeneDESCRIPTIONS)
+  feature=as.data.frame(eall,stringsAsFactors=F)
+feature=AnnotatedDataFrame(feature)
+ExprSet@featureData=feature
+
+save(ExprSet,file='ExprSet.RData')
+>>>>>>> a0763cb382cafcd4e34e1af3845f66999812cd67
 
