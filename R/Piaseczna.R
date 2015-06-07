@@ -1,8 +1,15 @@
-source("http://bioconductor.org/biocLite.R")
-biocLite()
+#setwd("C:/Users/Operator/Desktop/REPO_wsp/cele")
+#source("http://bioconductor.org/biocLite.R")
+#biocLite()
+
 library('affy')
 library('Biobase')
-library()
+
+
+biocLite("gahgu95av2.db")
+library("annotate")
+library("gahgu95av2.db")
+ls("package:gahgu95av2.db")
 
 data=read.table("datasetA_scans.txt",sep="\t",header=TRUE)
 data=data[c(1:16,211:227),]
@@ -22,10 +29,11 @@ experiment=new("MIAME",name="Dane mikromacierzowe WSP",lab="IO",title="dane test
                abstract="Przyklad",url="http://bioconductor.org",preprocessing=list(norm="RMA"),other=list(notes="inne",drugiepole="inne3"))
 
 FeatureData=RMA@featureData
-varMetadata(FeatureData)="nazwa"
+#varMetadata(FeatureData)="nazwa"
 
 ExprSet=new("ExpressionSet",exprs=dataRMA,featureData=AnnotatedDataFrame(as.data.frame(dataRMA)),phenoData=opis,experimentData=experiment,annotation="gahgu95av2.db",protocolData=opis)
 
-
-
-
+feat_num=dim(ExprSet)[1]
+cutoff=round(feat_num*0.025)
+ind_clear=expr_sort$ix[c(1:cutoff,(feat_num-cutoff):feat_num)]
+ExprSet=ExprSet[-ind_clear,]
