@@ -3,8 +3,10 @@ source("http://bioconductor.org/biocLite.R")
 biocLite(c("Biobase"))
 require("Biobase")
 
+('C:/Users/Anka2/Desktop/Studia_s1_s2/WSP/wsp')
 data<-read.table("datasetA_scans.txt",header=T,sep="\t")
 require("affy")
+
 
 data=data[c(1:17,211:227),]
 opis=read.AnnotatedDataFrame("datasetA_scans.txt",header=T,sep="\t",row.names=4,stringsAsFactors=F)
