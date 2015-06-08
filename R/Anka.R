@@ -1,12 +1,12 @@
-#setwd("D:/PoziomkiNinja/R")
-source("http://bioconductor.org/biocLite.R")
-biocLite(c("Biobase"))
-require("Biobase")
+#preprocessing = function(data, normalize_met=NULL) {
+  
+source("http://www.bioconductor.org/biocLite.R")
+biocLite('affy')
+library(affy);
+biocLite('Biostrings')
+library(Biostrings)
 
-('C:/Users/Anka2/Desktop/Studia_s1_s2/WSP/wsp')
-data<-read.table("datasetA_scans.txt",header=T,sep="\t")
-require("affy")
-
+setwd('C:/Users/Anka2/Desktop/Studia_s1_s2/WSP/wsp')
 
 data=data[c(1:17,211:227),]
 opis=read.AnnotatedDataFrame("datasetA_scans.txt",header=T,sep="\t",row.names=4,stringsAsFactors=F)
@@ -19,8 +19,38 @@ data_Affy=ReadAffy(filenames=sampleNames(opis),verbose=T)
 data_Affy@cdfName=paste("ga",data_Affy@cdfName,sep="")
 data_Affy@annotation=paste("ga",data_Affy@annotation,sep="")
 
-RMA=rma(data_Affy)
-dataRMA=exprs(RMA)
+
+if (normaliz_met=='MAS'){
+  normalizacja= expresso(
+    data_Affy,
+    # background correction
+    bg.correct = TRUE,
+    bgcorrect.method = "mas",
+    # normalize
+    normalize = TRUE,
+    normalize.method = "constant",
+    # pm correction
+    pmcorrect.method = "mas",
+    # expression values
+    summary.method = "mas")
+ }
+
+if (normaliz_met='RMA'){
+  normalizacja=expresso(
+    data_Affy,
+    # background correction
+    bg.correct = TRUE,
+    bgcorrect.method = "rma",
+    # normalize
+    normalize = TRUE,
+    normalize.method = "quantiles",
+    # pm correction
+    pmcorrect.method = "pmonly",
+    # expression values
+    summary.method = "medianpolish")
+}
+
+dataRMA=exprs(normalizacja)
 
 biocLite('gahgu95av2.db')
 require(gahgu95av2.db)
@@ -48,5 +78,4 @@ names[,1]=entrez_genename
 names=AnnotatedDataFrame(names)
 ExprSet@featureData=names
 ExprSet@protocolData=class
-
-
+#}
