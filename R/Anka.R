@@ -19,6 +19,15 @@ data_Affy=ReadAffy(filenames=sampleNames(opis),verbose=T)
 data_Affy@cdfName=paste("ga",data_Affy@cdfName,sep="")
 data_Affy@annotation=paste("ga",data_Affy@annotation,sep="")
 
+#####wykresy#####
+
+attach(mtcars)
+par(mfrow=c(2,2))
+hist(data_Affy, main='skala logarytmiczna, przed normalizacja')
+hist(data_Affy, main='skala liniowa, przed normalizacja',log=F)
+boxplot(data_Affy)
+data_Affy_deg=AffyRNAdeg(data_Affy)
+plotAffyRNAdeg(data_Affy_deg)
 
 if (normaliz_met=='MAS'){
   normalizacja= expresso(
