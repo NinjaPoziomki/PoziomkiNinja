@@ -36,7 +36,20 @@ expr<-exprs(ExprSet)
 sr_adeno<-rowMeans(expr[,adeno])
 sr_normal<-rowMeans(expr[,normal])
 
-FC<-sr_adeno/sr_normal
+adeno=which(pData(ExprSet)$CLASS=='ADENO')
+normal=which(pData(ExprSet)$CLASS=='NORMAL')
+
+
+if (typ_danych=='log')
+{
+  FC<-sr_adeno-sr_normal
+}
+else if (typ_danych=='norm')
+{
+  FC<-sr_adeno/sr_normal
+}
+else stop ("Typ_danych: log/norm")
+
 statistic<-apply(expr,1,function(x) t.test(x[adeno],x[normal])$statistic)
 pval<-apply(expr,1,function(x) t.test(x[adeno],x[normal])$p.val)
 p_val_kor<-p.adjust(pval,method=method)
@@ -60,39 +73,39 @@ TAB_ALL=TAB
 
 if (kryterium=='p_val_kor')
 {
-if (wartosc<1){
-  ind_sort=which(p_val_kor<wartosc)
-  TAB=TAB[ind_sort,]
-  ind_sort=sort(TAB[,9],index=T)$ix
-}
-else stop('Zła wartość')
+  if (wartosc<1){
+    ind_sort=which(p_val_kor<wartosc)
+    TAB=TAB[ind_sort,]
+    ind_sort=sort(TAB[,9],index=T)$ix
+  }
+  else stop('Zla wartosc')
 }
 else if (kryterium=='p_val')
-    {
-      if (wartosc<1){
-      ind_sort=which(pval<wartosc)
-      TAB=TAB[ind_sort,]
-      ind_sort=sort(TAB[,8],index=T)$ix
-    }
-   else stop('Zła wartość')
+{
+  if (wartosc<1){
+    ind_sort=which(pval<wartosc)
+    TAB=TAB[ind_sort,]
+    ind_sort=sort(TAB[,8],index=T)$ix
   }
+  else stop('zla wartosc')
+}
 
 else if (kryterium=='FC')
 {
-    ind_sort=which(FC<wartosc)
-    TAB=TAB[ind_sort,]
-    ind_sort=sort(TAB[,4],index=T)$ix
- 
+  ind_sort=which(FC<wartosc)
+  TAB=TAB[ind_sort,]
+  ind_sort=sort(TAB[,4],index=T)$ix
+  
 }
 
-else stop('Złe kryterium')
+else stop('Zle kryterium')
 
 if(liczba_wynikow>1){
-   
+  
   TAB=TAB[ind_sort[1:liczba_wynikow],]
 }
 
-else stop('Podaj wartość liczba_wynikow>=1')
+else stop('Podaj wartosc liczba_wynikow>=1')
 
 
 write.table(TAB,file='tab.txt',sep=',',row.names=F)
