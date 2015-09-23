@@ -10,7 +10,8 @@ sum_table=function(ExprSet,sel_params){
     kryterium=sel_params[[2]]
     wartosc=sel_params[[3]]
     liczba_wynikow=sel_params[[4]]
-  
+    typ_danych=sel_params[[5]]
+    
   adeno=which(pData(ExprSet)$CLASS=='ADENO')
   normal=which(pData(ExprSet)$CLASS=='NORMAL')
 
@@ -19,7 +20,16 @@ expr<-exprs(ExprSet)
 sr_adeno<-rowMeans(expr[,adeno])
 sr_normal<-rowMeans(expr[,normal])
 
-FC<-sr_adeno/sr_normal
+if (typ_danych=='log')
+{
+  FC<-sr_adeno-sr_normal
+}
+else if (typ_danych=='norm')
+{
+  FC<-sr_adeno/sr_normal
+}
+else stop ("Typ_danych: log/norm")
+
 statistic<-apply(expr,1,function(x) t.test(x[adeno],x[normal])$statistic)
 pval<-apply(expr,1,function(x) t.test(x[adeno],x[normal])$p.val)
 p_val_kor<-p.adjust(pval,method=method)
@@ -48,7 +58,7 @@ if (wartosc<1){
   TAB=TAB[ind_sort,]
   ind_sort=sort(TAB[,9],index=T)$ix
 }
-else stop('Zła wartość')
+else stop('Zla wartosc')
 }
 else if (kryterium=='p_val')
     {
@@ -57,7 +67,7 @@ else if (kryterium=='p_val')
       TAB=TAB[ind_sort,]
       ind_sort=sort(TAB[,8],index=T)$ix
     }
-   else stop('Zła wartość')
+   else stop('zla wartosc')
   }
 
 else if (kryterium=='FC')
@@ -68,14 +78,14 @@ else if (kryterium=='FC')
  
 }
 
-else stop('Złe kryterium')
+else stop('Zle kryterium')
 
 if(liczba_wynikow>1){
    
   TAB=TAB[ind_sort[1:liczba_wynikow],]
 }
 
-else stop('Podaj wartość liczba_wynikow>=1')
+else stop('Podaj wartosc liczba_wynikow>=1')
 
 
 write.table(TAB,file='tab.txt',sep=',',row.names=F)
@@ -88,10 +98,11 @@ return(d_genes)
 
 
 
-#do funkcji podajemy ExpressionSet, metodę korekcji("holm", "hochberg", "hommel", 
-#"bonferroni", "BH", "BY","fdr", "none"), według czego wybieramy wyniki 
-#(skorygowane p-value, p-value, fold change),jaki chcemy próg odcięcia
-# i ile chcemy wyników
-# Lista: TAB- tabela zawierająca posortowane dane, zgodnie z podanymi kryterium i liczbą wyników
+#do funkcji podajemy ExpressionSet, metode korekcji("holm", "hochberg", "hommel", 
+#"bonferroni", "BH", "BY","fdr", "none"), wedlug czego wybieramy wyniki 
+#(skorygowane p-value, p-value, fold change),jaki chcemy prog odciecia,
+# informacje czy dane sa zlogarytmowane, czy nie i ile chcemy wynikow
+# Lista: TAB- tabela zawierajaca posortowane dane, zgodnie z podanymi
+#kryterium i liczba wynikow
 #TAB_ALL- wszystkie wyniki
 
